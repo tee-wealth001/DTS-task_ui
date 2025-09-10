@@ -1,0 +1,13 @@
+<div class="task-list">
+    <h2>Tasks</h2>
+    <ul>
+        <li *ngFor="let t of tasks">
+            <div><strong>{{t.title}}</strong> — {{t.status}} <small *ngIf="t.due_at">(due: {{t.due_at |
+                    date:'short'}})</small></div>
+            <div>{{t.description}}</div>
+            <button (click)="setStatus(t.id, 'in_progress')">In progress</button>
+            <button (click)="setStatus(t.id, 'done')">Done</button>
+            <button (click)="delete(t.id)">Delete</button>
+        </li>
+    </ul>
+</div>
