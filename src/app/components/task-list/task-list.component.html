@@ -1,10 +1,17 @@
 <div class="container-fluid">
   <p-table [value]="tasks">
+
+    <ng-template pTemplate="caption">
+      <div class="flex items-center justify-between">
+        <span class="text-xl font-bold">Tasks</span>
+        <p-button icon="pi pi-plus" raised />
+      </div>
+    </ng-template>
     <ng-template pTemplate="header">
       <tr>
         <th>Title</th>
         <th>Status</th>
-        <th>Discription</th>
+        <th>Description</th>
         <th>Case Id</th>
         <th>Assigned To</th>
         <th>Due Date</th>
