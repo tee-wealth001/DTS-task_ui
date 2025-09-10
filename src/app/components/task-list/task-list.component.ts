@@ -3,11 +3,13 @@ import { Task } from '../../model/task.model';
 import { TaskService } from '../../services/task.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ButtonModule } from 'primeng/button';
+import { TableModule } from 'primeng/table';
 
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TableModule, ButtonModule],
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.scss'
 })
