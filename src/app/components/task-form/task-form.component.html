@@ -1,1 +1,111 @@
-<p>task-form works!</p>
+<!-- task-form.component.html -->
+<div class="max-w-4xl mx-auto p-6">
+
+    <!-- Main Form -->
+    <form #taskForm="ngForm" class="bg-white rounded-lg shadow-sm p-8">
+
+        <!-- Basic Information Section -->
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-6 pb-2 border-b border-gray-200">
+                <i class="pi pi-info-circle mr-2 text-blue-500"></i>
+                Task Details
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Title -->
+                <div class="md:col-span-2">
+                    <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
+                        Task Title <span class="text-red-500">*</span>
+                    </label>
+                    <input pInputText id="title" name="title" [(ngModel)]="task.title" placeholder="Enter task title"
+                        class="w-full" #titleInput="ngModel" required>
+                    <small *ngIf="titleInput.invalid && titleInput.touched" class="text-red-500">
+                        Task title is required
+                    </small>
+                </div>
+
+                <!-- Case ID -->
+                <div>
+                    <label for="caseId" class="block text-sm font-medium text-gray-700 mb-2">
+                        Case ID <span class="text-red-500">*</span>
+                    </label>
+                    <p-inputNumber id="caseId" name="caseId" [(ngModel)]="task.case_id" placeholder="Enter case ID"
+                        class="w-full" #caseIdInput="ngModel" [useGrouping]="false" required>
+                    </p-inputNumber>
+                    <small *ngIf="caseIdInput.invalid && caseIdInput.touched" class="text-red-500">
+                        Case ID is required
+                    </small>
+                </div>
+
+                <!-- Assigned To -->
+                <div>
+                    <label for="assignedTo" class="block text-sm font-medium text-gray-700 mb-2">
+                        Assigned To <span class="text-red-500">*</span>
+                    </label>
+                    <p-select id="assignedTo" name="assignedTo" [(ngModel)]="task.assigned_to"
+                        placeholder="Select assignee" optionLabel="label" optionValue="value" class="w-full"
+                        #assignedToInput="ngModel" required>
+                    </p-select>
+                    <small *ngIf="assignedToInput.invalid && assignedToInput.touched" class="text-red-500">
+                        Please select an assignee
+                    </small>
+                </div>
+
+                <!-- Status -->
+                <div>
+                    <label for="status" class="block text-sm font-medium text-gray-700 mb-2">
+                        Status <span class="text-red-500">*</span>
+                    </label>
+                    <p-select id="status" name="status" [(ngModel)]="task.status" placeholder="Select status"
+                        optionLabel="label" optionValue="value" class="w-full" #statusInput="ngModel" required>
+                    </p-select>
+                    <small *ngIf="statusInput.invalid && statusInput.touched" class="text-red-500">
+                        Please select a status
+                    </small>
+                </div>
+
+                <!-- Priority -->
+                <div>
+                    <label for="priority" class="block text-sm font-medium text-gray-700 mb-2">
+                        Priority <span class="text-red-500">*</span>
+                    </label>
+                    <p-select id="priority" name="priority" [(ngModel)]="task.priority" placeholder="Select priority"
+                        optionLabel="label" optionValue="value" class="w-full" #priorityInput="ngModel" required>
+                    </p-select>
+                    <small *ngIf="priorityInput.invalid && priorityInput.touched" class="text-red-500">
+                        Please select a priority
+                    </small>
+                </div>
+
+                <!-- Due Date -->
+                <div>
+                    <label for="dueAt" class="block text-sm font-medium text-gray-700 mb-2">
+                        Due Date
+                    </label>
+                    <p-datepicker id="dueAt" name="dueAt" [(ngModel)]="task.due_at" />
+                </div>
+
+                <!-- Description -->
+                <div class="md:col-span-2">
+                    <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+                        Description
+                    </label>
+                    <textarea pInputTextarea id="description" name="description" [(ngModel)]="task.description"
+                        placeholder="Enter task description..." class="w-full">
+                    </textarea>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex flex-col justify-between sm:flex-row gap-4 pt-6 border-t border-gray-200">
+                    <p-button type="submit" label="Create Task" icon="pi pi-save" [disabled]="taskForm.invalid"
+                        class="flex-1">
+                    </p-button>
+
+                    <p-button type="button" label="Cancel" icon="pi pi-times" severity="danger" class="flex-1">
+                    </p-button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>

@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { BadgeModule } from 'primeng/badge';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-task-list',
@@ -16,7 +17,7 @@ import { BadgeModule } from 'primeng/badge';
 })
 export class TaskListComponent implements OnInit {
   tasks: Task[] = [];
-  constructor(private taskService: TaskService) { }
+  constructor(private taskService: TaskService, private router: Router) { }
   private subscriptions: any[] = [];
 
   ngOnInit() {
@@ -49,4 +50,10 @@ export class TaskListComponent implements OnInit {
     else if (task.priority === "Low") return 'warn';
     else return 'success';
   }
+
+  addTask() {
+    console.log('Add Task button clicked');
+    this.router.navigate(['/form']);
+  }
+
 }
