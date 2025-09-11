@@ -33,6 +33,12 @@ export class TaskListComponent implements OnInit {
     this.subscriptions.push(sub);
   }
 
+  // write edit function to save to local storage
+  edit(task: Task) {
+    localStorage.setItem('selectedTask', JSON.stringify(task.id));
+    this.router.navigate(['/form']);
+  }
+
   delete(id?: number) {
     if (!id) return;
     const sub = this.taskService.delete(id).subscribe(() => this.load());
@@ -46,14 +52,38 @@ export class TaskListComponent implements OnInit {
   }
 
   taskSeverity(task: Task) {
-    if (task.priority === "High") return 'danger';
-    else if (task.priority === "Low") return 'warn';
+    if (task.priority === "high") return 'danger';
+    else if (task.priority === "low") return 'info';
+    else return 'warn';
+  }
+
+  taskStatus(task: Task) {
+    if (task.status === "todo") return 'info';
+    else if (task.status === "in progress") return 'warn';
     else return 'success';
   }
 
   addTask() {
     console.log('Add Task button clicked');
     this.router.navigate(['/form']);
+  }
+
+  getInitials(name: string): string {
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  }
+
+  getStatusLabel(status: string): string {
+    const labels: { [key: string]: string } = {
+      'todo': 'To Do',
+      'in_progress': 'In Progress',
+      'completed': 'Completed'
+    };
+    return labels[status] || status;
   }
 
 }
