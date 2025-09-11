@@ -96,11 +96,6 @@ export class TaskFormComponent implements OnInit {
     this.router.navigate(['']);
   }
 
-  back(taskForm: NgForm) {
-    localStorage.removeItem('selectedTask');
-    this.router.navigate(['']);
-  }
-
   onSubmit(taskForm: NgForm) {
     if (taskForm.valid) {
       if (this.savedTaskId) {
