@@ -163,6 +163,7 @@ Provides **CRUD API calls**:
 | `getTask(id)`          | Get task by ID      |
 | `createTask(task)`     | Create a task       |
 | `updateTask(id, task)` | Full update task    |
+| `updateStatus(id, status)` | update task status    |
 | `deleteTask(id)`       | Delete task by ID   |
 
 ---

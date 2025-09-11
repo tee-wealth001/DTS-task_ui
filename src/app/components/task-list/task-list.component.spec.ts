@@ -1,16 +1,19 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { TaskListComponent } from './task-list.component';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { TaskService } from '../../services/task.service';
 import { PriorityEnum, Task } from '../../model/task.model';
 import { StatusEnum } from '../../enums/enums';
+import { MessageService } from 'primeng/api';
 
 describe('TaskListComponent', () => {
   let component: TaskListComponent;
   let fixture: ComponentFixture<TaskListComponent>;
   let taskServiceSpy: jasmine.SpyObj<TaskService>;
   let routerSpy: jasmine.SpyObj<Router>;
+  let messageService: jasmine.SpyObj<MessageService>;
+
 
   const mockTasks: Task[] = [
     {
@@ -44,16 +47,20 @@ describe('TaskListComponent', () => {
     assigned_to: 'Alice',
     priority: PriorityEnum.Medium,
   };
-  
+
   beforeEach(async () => {
     const taskServiceMock = jasmine.createSpyObj('TaskService', ['getAll', 'delete', 'updateStatus']);
     const routerMock = jasmine.createSpyObj('Router', ['navigate']);
+    const messageServiceSpy = jasmine.createSpyObj('MessageService', ['add']);
+
 
     await TestBed.configureTestingModule({
       imports: [TaskListComponent],
       providers: [
         { provide: TaskService, useValue: taskServiceMock },
-        { provide: Router, useValue: routerMock }
+        { provide: Router, useValue: routerMock },
+        { provide: MessageService, useValue: messageServiceSpy }
+
       ]
     }).compileComponents();
 
@@ -61,6 +68,7 @@ describe('TaskListComponent', () => {
     component = fixture.componentInstance;
     taskServiceSpy = TestBed.inject(TaskService) as jasmine.SpyObj<TaskService>;
     routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    messageService = TestBed.inject(MessageService) as jasmine.SpyObj<MessageService>;
 
     taskServiceSpy.getAll.and.returnValue(of(mockTasks));
     fixture.detectChanges();
@@ -153,5 +161,66 @@ describe('TaskListComponent', () => {
     component.onPageChange1({} as any);
     expect(component.first1).toBe(0);
     expect(component.rows1).toBe(10);
+  });
+
+  it('showDialog() should set visible, selectedTaskStatus, selectedTaskId, and task correctly', () => {
+
+    component.showDialog(mockTask);
+
+    expect(component.visible).toBeTrue();
+    expect(component.selectedTaskStatus).toBe(mockTask.status);
+    expect(component.selectedTaskId).toBe(mockTask.id);
+    expect(component.task).toBe(mockTask);
+  });
+
+  it('onPatchStatus() should call updateStatus and handle success', () => {
+    component.visible = true;
+    component.task = { id: 1, status: 'todo' } as Task;
+    component.selectedTaskId = component.task.id;
+    component.selectedTaskStatus = 'completed';
+
+    taskServiceSpy.updateStatus.and.returnValue(of(mockTask));
+
+    spyOn(component, 'load'); // spy on load method if applicable
+
+    component.onPatchStatus();
+
+    expect(taskServiceSpy.updateStatus).toHaveBeenCalledWith(1, { status: 'completed' });
+    expect(messageService.add).toHaveBeenCalledWith(jasmine.objectContaining({
+      severity: 'success',
+      summary: 'Success'
+    }));
+    expect(component.load).toHaveBeenCalled();
+    expect(component.visible).toBeFalse();
+  });
+
+  it('onPatchStatus() should not call updateStatus if status unchanged', () => {
+    component.task = { id: 1, status: 'todo' } as Task;
+    component.selectedTaskId = component.task.id;
+    component.selectedTaskStatus = 'todo'; // same as current status
+
+    component.onPatchStatus();
+
+    expect(taskServiceSpy.updateStatus).not.toHaveBeenCalled();
+  });
+
+  it('onPatchStatus() should handle error response', () => {
+    component.visible = true;
+    component.task = { id: 1, status: 'todo' } as Task;
+    component.selectedTaskId = component.task.id;
+    component.selectedTaskStatus = 'completed';
+
+    const errorResponse = { error: { detail: 'Failed' } };
+    taskServiceSpy.updateStatus.and.returnValue(throwError(() => errorResponse));
+
+    component.onPatchStatus();
+
+    expect(taskServiceSpy.updateStatus).toHaveBeenCalledWith(1, { status: 'completed' });
+    expect(messageService.add).toHaveBeenCalledWith(jasmine.objectContaining({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'Failed'
+    }));
+    expect(component.visible).toBeTrue(); // should not close on error
   });
 });

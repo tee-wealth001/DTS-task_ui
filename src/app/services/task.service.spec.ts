@@ -78,18 +78,19 @@ describe('TaskService', () => {
     req.flush(updatedTask);
   });
 
-  it('should update task status', () => {
-    const updatedTask: Task = { id: 1, title: 'Task 1', description: '', status: StatusEnum.Completed, due_at: new Date(), case_id: 1, assigned_to: 'Alice', priority: PriorityEnum.Low };
+it('should update task status', () => {
+  const updatedTask = { status: StatusEnum.Completed };
 
-    service.updateStatus(1, StatusEnum.Completed).subscribe(task => {
-      expect(task.status).toBe(StatusEnum.Completed);
-    });
-
-    const req = httpMock.expectOne(`${baseUrl}/tasks/1/status`);
-    expect(req.request.method).toBe('PATCH');
-    expect(req.request.body).toEqual({ status: StatusEnum.Completed });
-    req.flush(updatedTask);
+  service.updateStatus(1, { status: StatusEnum.Completed }).subscribe(task => {
+    expect(task.status).toBe(StatusEnum.Completed);
   });
+
+  const req = httpMock.expectOne(`${baseUrl}/tasks/1`);
+  expect(req.request.method).toBe('PATCH');
+  expect(req.request.body).toEqual({ status: StatusEnum.Completed });
+  req.flush(updatedTask);
+});
+
 
   it('should delete a task', () => {
     service.delete(1).subscribe(res => {

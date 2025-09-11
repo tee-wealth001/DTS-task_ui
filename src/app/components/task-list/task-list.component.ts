@@ -35,6 +35,14 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   rows1: number = 10;
 
+  visible: boolean = false;
+
+  selectedTaskStatus: string = '';
+
+  selectedTaskId: number | undefined;
+
+  task: Task | null = null;
+
   status = [
     { label: 'To Do', value: StatusEnum.Todo },
     { label: 'In Progress', value: StatusEnum.In_progress },
@@ -106,7 +114,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   getStatusLabel(status: string): string {
     const labels: { [key: string]: string } = {
       'todo': 'To Do',
-      'in progress': 'In Progress',
+      'in_progress': 'In Progress',
       'completed': 'Completed'
     };
     return labels[status] || status;
@@ -126,12 +134,6 @@ export class TaskListComponent implements OnInit, OnDestroy {
       task.status = StatusEnum.Todo;
     }
   }
-
-  visible: boolean = false;
-  selectedTaskStatus: string = ''
-  selectedTaskId: number | undefined
-  task: Task | null = null;
-
 
   showDialog(task: Task) {
     this.visible = true;
