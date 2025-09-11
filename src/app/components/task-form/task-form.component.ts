@@ -162,7 +162,7 @@ export class TaskFormComponent implements OnInit, OnDestroy {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: 'Failed to save task'
+              detail: error.error?.detail || 'Failed to save task'
             });
           }
         });

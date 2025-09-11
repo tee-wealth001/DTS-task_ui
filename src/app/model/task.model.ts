@@ -8,3 +8,9 @@ export interface Task {
     assigned_to: string,
     priority: string,
 }
+
+export enum PriorityEnum {
+  Low = "low",
+  Medium = "medium",
+  High = "high"
+}
