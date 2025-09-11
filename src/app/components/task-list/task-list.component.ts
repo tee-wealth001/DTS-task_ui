@@ -65,12 +65,6 @@ export class TaskListComponent implements OnInit, OnDestroy {
     this.subscriptions.push(sub);
   }
 
-  setStatus(id?: number, status?: string) {
-    if (!id || !status) return;
-    const sub = this.taskService.updateStatus(id, status).subscribe(() => this.load());
-    this.subscriptions.push(sub);
-  }
-
   taskSeverity(task: Task) {
     if (task.priority === PriorityEnum.High) return 'danger';
     else if (task.priority === PriorityEnum.Low) return 'info';

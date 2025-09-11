@@ -115,15 +115,6 @@ describe('TaskListComponent', () => {
     expect(component.load).toHaveBeenCalled();
   }));
 
-  it('setStatus() should call updateStatus and reload tasks', fakeAsync(() => {
-    taskServiceSpy.updateStatus.and.returnValue(of(mockTask));
-    component.load = jasmine.createSpy('load');
-    component.setStatus(1, StatusEnum.Completed);
-    tick();
-    expect(taskServiceSpy.updateStatus).toHaveBeenCalledWith(1, StatusEnum.Completed);
-    expect(component.load).toHaveBeenCalled();
-  }));
-
   it('taskSeverity() should return correct CSS classes', () => {
     expect(component.taskSeverity({ ...mockTasks[0] })).toBe('danger');
     expect(component.taskSeverity({ ...mockTasks[1] })).toBe('info');

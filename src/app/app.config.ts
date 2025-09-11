@@ -7,7 +7,7 @@ import Aura from '@primeng/themes/aura';
 import Lara from '@primeng/themes/lara';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-
+export const API_BASE_URL = 'http://localhost:8000';
 
 export const appConfig: ApplicationConfig = {
   providers: [providePrimeNG({

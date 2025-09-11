@@ -1,27 +1,184 @@
-# TaskUi
+# Task Management Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.12.
+This is the **Angular standalone frontend** for the Task Management system. It interacts with the FastAPI backend and provides CRUD functionality for tasks. The project uses **TailwindCSS**, **PrimeNG**, and **RxJS**.
 
-## Development server
+---
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Table of Contents
 
-## Code scaffolding
+* [Features](#features)
+* [Tech Stack](#tech-stack)
+* [Project Structure](#project-structure)
+* [Setup & Installation](#setup--installation)
+* [Running the App](#running-the-app)
+* [Unit Testing](#unit-testing)
+* [API Configuration](#api-configuration)
+* [Routing](#routing)
+* [Components](#components)
+* [Services](#services)
+* [Styling](#styling)
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+---
 
-## Build
+## Features
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+* View, create, update, and delete tasks
+* Form validation with reactive forms
+* Filter tasks by status and priority
+* Assign tasks to users
+* Async API calls with **HttpClient**
+* Styled with **TailwindCSS** and **PrimeNG**
+* Standalone Angular components
+* Unit tests for all components and services
 
-## Running unit tests
+---
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Tech Stack
 
-## Running end-to-end tests
+* Angular 18 (Standalone components)
+* TypeScript
+* TailwindCSS
+* PrimeNG + tailwindcss-primeui
+* RxJS
+* HttpClient for API calls
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+---
 
-## Further help
+## Project Structure
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```
+src/
+├─ app/
+│  ├─ services/
+│  │  └─ task.service.ts        # CRUD API calls
+│  ├─ models/
+│  │  └─ task.model.ts          # Task interface
+│  ├─ enums/
+│  │  └─ enum.ts                # Status and priority enums
+│  ├─ components/
+│  │  ├─ task-list/
+│  │  │  ├─ task-list.component.ts
+│  │  │  ├─ task-list.component.html
+│  │  │  └─ task-list.component.scss
+│  │  └─ task-form/
+│  │     ├─ task-form.component.ts
+│  │     ├─ task-form.component.html
+│  │     └─ task-form.component.scss
+│  ├─ app-config.ts             # Config constants (API base URL, etc.)
+│  └─ app.routes.ts             # App routes
+```
+
+---
+
+## Setup & Installation
+
+### 1. Clone the repo
+
+```bash
+git clone <https://github.com/tee-wealth001/DTS-task_ui.git>
+cd <DTS-task_ui>
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Configure API
+
+Set the backend API URL in `app-config.ts`:
+
+```ts
+export const API_BASE_URL = 'http://localhost:8000';
+```
+
+---
+
+## Running the App
+
+```bash
+ng serve
+```
+
+* Open browser at `http://localhost:4200`
+
+---
+
+## Unit Testing
+
+All components and services have `spec.ts` tests. Run tests using:
+
+```bash
+ng test
+```
+
+* **Angular CLI** uses Karma/Jasmine by default
+* Tests include:
+
+  * CRUD operations in `task.service.ts`
+  * Component rendering and form validation
+  * Button click events and output handling
+
+---
+
+## Routing
+
+Defined in `app.routes.ts`:
+
+| Path             | Component         | Description        |
+| ---------------- | ----------------- | ------------------ |
+| `/`              | TaskListComponent | Show all tasks     |
+| `/form`          | TaskFormComponent | Create a new task  |
+| `/form`          | TaskFormComponent | Edit existing task |
+
+---
+
+## Components
+
+### Task List (`task-list.component`)
+
+* Displays tasks in a **PrimeNG table**
+* Buttons for edit and delete
+* Filters for status and priority
+
+### Task Form (`task-form.component`)
+
+* Reactive form for **create/edit tasks**
+* Dropdowns for `status`, `priority`, `assigned_to`
+* Validations for required fields
+* Buttons for **submit** and **cancel**
+
+---
+
+## Services
+
+### TaskService
+
+Provides **CRUD API calls**:
+
+| Method                 | Description         |
+| ---------------------- | ------------------- |
+| `getTasks()`           | Get all tasks       |
+| `getTask(id)`          | Get task by ID      |
+| `createTask(task)`     | Create a task       |
+| `updateTask(id, task)` | Full update task    |
+| `deleteTask(id)`       | Delete task by ID   |
+
+---
+
+## Styling
+
+* **TailwindCSS** for utility-first styling
+* **PrimeNG** components styled via `tailwindcss-primeui`
+* All forms and tables are responsive
+
+---
+
+## Notes
+
+* Ensure the backend is running and reachable at the URL in `app-config.ts`
+* Use `ng test` to verify unit tests before deployment
+* Standalone components simplify modular imports and lazy loading
+
+---
