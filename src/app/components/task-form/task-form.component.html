@@ -107,12 +107,20 @@
                 </div>
 
                 <!-- Form Actions -->
-                <div class="flex flex-col justify-between sm:flex-row gap-4 pt-6 border-t border-gray-200" *ngIf="savedAction !== 'view'">
+                <div class="flex flex-col justify-between sm:flex-row gap-4 pt-6 border-t border-gray-200"
+                    *ngIf="savedAction !== 'view'">
                     <p-button type="submit" label="Save Task" icon="pi pi-save" class="flex-1 text-white"
                         [disabled]="taskForm.invalid">
                     </p-button>
                     <p-button type="button" label="Cancel" icon="pi pi-times" severity="danger" class="flex-1 0"
                         (click)="cancel(taskForm)">
+                    </p-button>
+                </div>
+
+                <div class="flex flex-col justify-between sm:flex-row gap-4 pt-6 border-t border-gray-200"
+                    *ngIf="savedAction === 'view'">
+                    <p-button type="button" label="Back" icon="pi pi-arrow-circle-left" severity="info" class="flex-1 0"
+                        (click)="back(taskForm)">
                     </p-button>
                 </div>
             </div>
