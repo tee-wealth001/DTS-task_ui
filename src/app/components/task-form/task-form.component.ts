@@ -8,9 +8,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DatePickerModule } from 'primeng/datepicker';
 import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { ToastModule } from 'primeng/toast';
 import { TaskService } from '../../services/task.service';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-task-form',
@@ -19,14 +19,13 @@ import { Router } from '@angular/router';
     InputNumberModule,
     SelectModule,
     DatePickerModule,
-    ButtonModule,
-    ToastModule,],
+    ButtonModule,],
   templateUrl: './task-form.component.html',
   styleUrl: './task-form.component.scss'
 })
 export class TaskFormComponent implements OnInit {
 
-  constructor(private taskService: TaskService, private router: Router) { }
+  constructor(private taskService: TaskService, private router: Router, private messageService: MessageService) { }
 
   task: Task = {
     title: '',
@@ -101,7 +100,6 @@ export class TaskFormComponent implements OnInit {
       if (this.savedTaskId) {
         this.taskService.update(+this.savedTaskId, this.task).subscribe({
           next: (updatedTask) => {
-            console.log('Task updated successfully:', updatedTask);
             taskForm.resetForm();
             this.task = {
               title: '',
@@ -114,15 +112,18 @@ export class TaskFormComponent implements OnInit {
             };
             localStorage.removeItem('selectedTask');
             this.router.navigate(['']);
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Task updated successfully', life: 3000 });
+
           },
           error: (error) => {
             console.error('Error updating task:', error);
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update task' });
+
           }
         });
       } else {
         this.taskService.create(this.task).subscribe({
           next: (createdTask) => {
-            console.log('Task created successfully:', createdTask);
             taskForm.resetForm();
             this.task = {
               title: '',
@@ -134,9 +135,12 @@ export class TaskFormComponent implements OnInit {
               priority: ''
             };
             this.router.navigate(['']);
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Task created successfully', life: 3000 });
+
           },
           error: (error) => {
             console.error('Error creating task:', error);
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to create task' });
           }
         });
       }
