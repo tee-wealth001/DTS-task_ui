@@ -9,6 +9,7 @@ import { BadgeModule } from 'primeng/badge';
 import { Router } from '@angular/router';
 import { DialogModule } from 'primeng/dialog';
 import { Paginator, PaginatorModule, PaginatorState } from 'primeng/paginator';
+import { PriorityEnum, StatusEnum } from '../../enums/enums';
 
 @Component({
   selector: 'app-task-list',
@@ -19,10 +20,18 @@ import { Paginator, PaginatorModule, PaginatorState } from 'primeng/paginator';
 })
 export class TaskListComponent implements OnInit, OnDestroy {
   tasks: Task[] = [];
-  constructor(private taskService: TaskService, private router: Router) { }
+
   private subscriptions: any[] = [];
+
   displayModal = false;
+
   selectedTask: Task | null = null;
+
+  first1: number = 0;
+
+  rows1: number = 10;
+
+  constructor(private taskService: TaskService, private router: Router) { }
 
   ngOnInit() {
     this.load();
@@ -63,14 +72,14 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   taskSeverity(task: Task) {
-    if (task.priority === "high") return 'danger';
-    else if (task.priority === "low") return 'info';
+    if (task.priority === PriorityEnum.High) return 'danger';
+    else if (task.priority === PriorityEnum.Low) return 'info';
     else return 'warn';
   }
 
   taskStatus(task: Task) {
-    if (task.status === "todo") return 'info';
-    else if (task.status === "in progress") return 'warn';
+    if (task.status === StatusEnum.Todo) return 'info';
+    else if (task.status === StatusEnum.In_progress) return 'warn';
     else return 'success';
   }
 
@@ -97,12 +106,8 @@ export class TaskListComponent implements OnInit, OnDestroy {
     return labels[status] || status;
   }
 
-first1: number = 0;
-
-    rows1: number = 10;
-
-    onPageChange1(event: PaginatorState) {
-        this.first1 = event.first ?? 0;
-        this.rows1 = event.rows ?? 10;
-    }
+  onPageChange1(event: PaginatorState) {
+    this.first1 = event.first ?? 0;
+    this.rows1 = event.rows ?? 10;
+  }
 }

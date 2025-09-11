@@ -12,6 +12,7 @@ import { TaskService } from '../../services/task.service';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Subject, takeUntil } from 'rxjs';
+import { PriorityEnum, StatusEnum } from '../../enums/enums';
 
 @Component({
   selector: 'app-task-form',
@@ -26,30 +27,28 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class TaskFormComponent implements OnInit, OnDestroy {
 
-  constructor(private taskService: TaskService, private router: Router, private messageService: MessageService) { }
-
   private destroy$ = new Subject<void>();
 
   task: Task = {
     title: '',
     description: '',
-    status: 'todo',
+    status: StatusEnum.Todo,
     due_at: new Date(),
     case_id: 0,
     assigned_to: '',
-    priority: ''
+    priority: PriorityEnum.Low
   };
 
   status = [
-    { label: 'To Do', value: 'todo' },
-    { label: 'In Progress', value: 'in progress' },
-    { label: 'Completed', value: 'completed' }
+    { label: 'To Do', value: StatusEnum.Todo },
+    { label: 'In Progress', value: StatusEnum.In_progress },
+    { label: 'Completed', value: StatusEnum.Completed }
   ];
 
   priority = [
-    { label: 'Low', value: 'low' },
-    { label: 'Medium', value: 'medium' },
-    { label: 'High', value: 'high' }
+    { label: 'Low', value: PriorityEnum.Low },
+    { label: 'Medium', value: PriorityEnum.Medium },
+    { label: 'High', value: PriorityEnum.High }
   ];
 
   assignedUsers = [
@@ -59,7 +58,11 @@ export class TaskFormComponent implements OnInit, OnDestroy {
   ];
 
   savedTaskId: string | null = null;
+
   savedAction: string | null = null;
+
+  constructor(private taskService: TaskService, private router: Router, private messageService: MessageService) { }
+
 
   ngOnInit() {
     this.getSelectedTask();
@@ -116,7 +119,7 @@ export class TaskFormComponent implements OnInit, OnDestroy {
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
 
-    return new Date(`${year}-${month}-${day}T${hours}:${minutes}:${seconds}`);
+    return new Date(`${year}-${month}-${day}T${hours}:${minutes}:${seconds}Z`);
   };
 
 
@@ -139,11 +142,11 @@ export class TaskFormComponent implements OnInit, OnDestroy {
             this.task = {
               title: '',
               description: '',
-              status: 'todo',
+              status: StatusEnum.Todo,
               due_at: new Date(),
               case_id: 0,
               assigned_to: '',
-              priority: ''
+              priority: PriorityEnum.Low
             };
             localStorage.removeItem('selectedTask');
             this.router.navigate(['']);
