@@ -57,19 +57,38 @@ export class TaskFormComponent implements OnInit {
   ];
 
   savedTaskId: string | null = null;
+  savedAction: string | null = null;
 
   ngOnInit() {
     this.getSelectedTask();
   }
 
   getSelectedTask() {
-    this.savedTaskId = localStorage.getItem('selectedTask');
+    const selectedTask = localStorage.getItem('selectedTask');
+    if (selectedTask) {
+      try {
+        const parsed = JSON.parse(selectedTask);
+        this.savedTaskId = parsed?.id ? String(parsed.id) : null;
+        this.savedAction = parsed?.action ? String(parsed.action) : null;
+      } catch {
+        this.savedTaskId = null;
+        this.savedAction = null;
+      }
+    } else {
+      this.savedTaskId = null;
+      this.savedAction = null;
+    }
+
+    console.log('Task ID:', this.savedTaskId);
+    console.log('Task Action:', this.savedAction);
+
     if (this.savedTaskId) {
       this.taskService.get(+this.savedTaskId).subscribe(task => {
         this.task = task;
       });
     }
   }
+
 
   cancel(taskForm: NgForm) {
     taskForm.resetForm();

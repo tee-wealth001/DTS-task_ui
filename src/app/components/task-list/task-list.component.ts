@@ -7,11 +7,12 @@ import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { BadgeModule } from 'primeng/badge';
 import { Router } from '@angular/router';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, TableModule, ButtonModule, BadgeModule],
+  imports: [CommonModule, FormsModule, TableModule, ButtonModule, BadgeModule, DialogModule],
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.scss'
 })
@@ -19,6 +20,8 @@ export class TaskListComponent implements OnInit {
   tasks: Task[] = [];
   constructor(private taskService: TaskService, private router: Router) { }
   private subscriptions: any[] = [];
+  displayModal = false;
+  selectedTask: Task | null = null;
 
   ngOnInit() {
     this.load();
@@ -35,8 +38,15 @@ export class TaskListComponent implements OnInit {
 
   // write edit function to save to local storage
   edit(task: Task) {
-    localStorage.setItem('selectedTask', JSON.stringify(task.id));
+    localStorage.setItem('selectedTask', JSON.stringify({ id: task.id, action: 'edit' }));
     this.router.navigate(['/form']);
+  }
+
+  view(task: Task) {
+    this.displayModal = true;
+    localStorage.setItem('selectedTask', JSON.stringify({ id: task.id, action: 'view' }));
+    this.router.navigate(['/form']);
+    this.selectedTask = task
   }
 
   delete(id?: number) {
