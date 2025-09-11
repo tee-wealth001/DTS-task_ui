@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FluidModule } from 'primeng/fluid';
 import { Task } from '../../model/task.model';
 import { FormsModule, NgForm } from '@angular/forms';
@@ -11,6 +11,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { TaskService } from '../../services/task.service';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-task-form',
@@ -23,9 +24,11 @@ import { MessageService } from 'primeng/api';
   templateUrl: './task-form.component.html',
   styleUrl: './task-form.component.scss'
 })
-export class TaskFormComponent implements OnInit {
+export class TaskFormComponent implements OnInit, OnDestroy {
 
   constructor(private taskService: TaskService, private router: Router, private messageService: MessageService) { }
+
+  private destroy$ = new Subject<void>();
 
   task: Task = {
     title: '',
@@ -62,6 +65,11 @@ export class TaskFormComponent implements OnInit {
     this.getSelectedTask();
   }
 
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   getSelectedTask() {
     const selectedTask = localStorage.getItem('selectedTask');
     if (selectedTask) {
@@ -78,17 +86,15 @@ export class TaskFormComponent implements OnInit {
       this.savedAction = null;
     }
 
-    console.log('Task ID:', this.savedTaskId);
-    console.log('Task Action:', this.savedAction);
-
     if (this.savedTaskId) {
-      this.taskService.get(+this.savedTaskId).subscribe(task => {
-        this.task = task;
-        console.log(task)
-        if (task.due_at) {
-          this.task.due_at = new Date(task.due_at);
-        }
-      });
+      this.taskService.get(+this.savedTaskId).pipe(takeUntil(this.destroy$))
+        .subscribe(task => {
+          this.task = task;
+          console.log(task)
+          if (task.due_at) {
+            this.task.due_at = new Date(task.due_at);
+          }
+        });
     }
   }
 
@@ -114,21 +120,21 @@ export class TaskFormComponent implements OnInit {
   };
 
 
-
   onSubmit(taskForm: NgForm) {
     if (taskForm.valid) {
-
       const taskToSave = {
         ...this.task,
         due_at: this.formatDateTime(this.task.due_at)
       };
 
-      console.log(taskToSave);
-      if (this.savedTaskId) {
+      const request$ = this.savedTaskId
+        ? this.taskService.update(+this.savedTaskId, taskToSave)
+        : this.taskService.create(taskToSave);
 
-        console.log("this.task from edit", this.task)
-        this.taskService.update(+this.savedTaskId, taskToSave).subscribe({
-          next: (updatedTask) => {
+      request$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => {
             taskForm.resetForm();
             this.task = {
               title: '',
@@ -141,39 +147,22 @@ export class TaskFormComponent implements OnInit {
             };
             localStorage.removeItem('selectedTask');
             this.router.navigate(['']);
-            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Task updated successfully', life: 3000 });
-
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: `Task ${this.savedTaskId ? 'updated' : 'created'} successfully`,
+              life: 3000
+            });
           },
           error: (error) => {
-            console.error('Error updating task:', error);
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update task' });
-
+            console.error('Error saving task:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to save task'
+            });
           }
         });
-      } else {
-        this.taskService.create(this.task).subscribe({
-          next: (createdTask) => {
-            taskForm.resetForm();
-            this.task = {
-              title: '',
-              description: '',
-              status: 'todo',
-              due_at: new Date(),
-              case_id: 0,
-              assigned_to: '',
-              priority: ''
-            };
-            this.router.navigate(['']);
-            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Task created successfully', life: 3000 });
-
-          },
-          error: (error) => {
-            console.error('Error creating task:', error);
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to create task' });
-          }
-        });
-      }
     }
   }
-
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Task } from '../../model/task.model';
 import { TaskService } from '../../services/task.service';
 import { CommonModule } from '@angular/common';
@@ -17,7 +17,7 @@ import { Paginator, PaginatorModule, PaginatorState } from 'primeng/paginator';
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.scss'
 })
-export class TaskListComponent implements OnInit {
+export class TaskListComponent implements OnInit, OnDestroy {
   tasks: Task[] = [];
   constructor(private taskService: TaskService, private router: Router) { }
   private subscriptions: any[] = [];
