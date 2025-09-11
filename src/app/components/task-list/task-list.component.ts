@@ -8,11 +8,12 @@ import { TableModule } from 'primeng/table';
 import { BadgeModule } from 'primeng/badge';
 import { Router } from '@angular/router';
 import { DialogModule } from 'primeng/dialog';
+import { Paginator, PaginatorModule, PaginatorState } from 'primeng/paginator';
 
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, TableModule, ButtonModule, BadgeModule, DialogModule],
+  imports: [CommonModule, FormsModule, TableModule, ButtonModule, BadgeModule, DialogModule, PaginatorModule],
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.scss'
 })
@@ -96,4 +97,12 @@ export class TaskListComponent implements OnInit {
     return labels[status] || status;
   }
 
+first1: number = 0;
+
+    rows1: number = 10;
+
+    onPageChange1(event: PaginatorState) {
+        this.first1 = event.first ?? 0;
+        this.rows1 = event.rows ?? 10;
+    }
 }
