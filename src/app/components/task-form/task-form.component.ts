@@ -31,7 +31,7 @@ export class TaskFormComponent implements OnInit {
     title: '',
     description: '',
     status: 'todo',
-    due_at: '',
+    due_at: new Date(),
     case_id: 0,
     assigned_to: '',
     priority: ''
@@ -84,6 +84,10 @@ export class TaskFormComponent implements OnInit {
     if (this.savedTaskId) {
       this.taskService.get(+this.savedTaskId).subscribe(task => {
         this.task = task;
+        console.log(task)
+        if (task.due_at) {
+          this.task.due_at = new Date(task.due_at);
+        }
       });
     }
   }
@@ -95,17 +99,42 @@ export class TaskFormComponent implements OnInit {
     this.router.navigate(['']);
   }
 
+
+  formatDateTime = (date: Date | null | undefined): Date => {
+    if (!date) return new Date();
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    return new Date(`${year}-${month}-${day}T${hours}:${minutes}:${seconds}Z`);
+  };
+
+
+
   onSubmit(taskForm: NgForm) {
     if (taskForm.valid) {
+
+      const taskToSave = {
+        ...this.task,
+        due_at: this.formatDateTime(this.task.due_at)
+      };
+
+      console.log(taskToSave);
       if (this.savedTaskId) {
-        this.taskService.update(+this.savedTaskId, this.task).subscribe({
+
+        console.log("this.task from edit", this.task)
+        this.taskService.update(+this.savedTaskId, taskToSave).subscribe({
           next: (updatedTask) => {
             taskForm.resetForm();
             this.task = {
               title: '',
               description: '',
               status: 'todo',
-              due_at: '',
+              due_at: new Date(),
               case_id: 0,
               assigned_to: '',
               priority: ''
@@ -129,7 +158,7 @@ export class TaskFormComponent implements OnInit {
               title: '',
               description: '',
               status: 'todo',
-              due_at: '',
+              due_at: new Date(),
               case_id: 0,
               assigned_to: '',
               priority: ''

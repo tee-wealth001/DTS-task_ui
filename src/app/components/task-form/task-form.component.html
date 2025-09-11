@@ -92,7 +92,8 @@
                     </label>
                     <p-datepicker id="dueAt" name="dueAt"
                         class="w-full border-blue-300 focus:ring-blue-500 focus:border-blue-500"
-                        [(ngModel)]="task.due_at" [disabled]="savedAction === 'view'" />
+                        [(ngModel)]="task.due_at" [disabled]="savedAction === 'view'" dateFormat="yy-mm-dd"
+                        hourFormat="24" [showTime]="true" utc="true" />
                 </div>
 
                 <!-- Description -->
